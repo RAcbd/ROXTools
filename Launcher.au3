@@ -21,12 +21,12 @@
 #include <INet.au3>
 #include <Constants.au3>
 
-Global $GUI_NAME = "Exp Calc Launcher"
+Global $GUI_NAME = "rHelper Launcher"
 
 #Region ### START Koda GUI section ### Form=
 $Form1 = GUICreate($GUI_NAME, 300, 80, 406, 324)
-$Button1 = GUICtrlCreateButton("Ragnarok X: Exp Calculator", -1, -1, -1, -1, 0)
-$Button2 = GUICtrlCreateButton("Ragnarok X: Exp Per Hour", -1, 30, -1, -1, 0)
+$Button1 = GUICtrlCreateButton("EXP Calculator", -1, -1, -1, -1, 0)
+$Button2 = GUICtrlCreateButton("Exp Per Hour", -1, 30, -1, -1, 0)
 $Label1 = GUICtrlCreateLabel("Coded By: Raff", 210, 20, 96, 17)
 
 $StatusBar1 = _GUICtrlStatusBar_Create($Form1)
@@ -45,17 +45,17 @@ While 1
 		Exit
 
 		Case $Button2
-			If WinExists("Ragnarok X | EXP / Hour | by: Raff") Then
-			WinActivate("Ragnarok X | EXP / Hour | by: Raff")
-			WinWaitActive("Ragnarok X | EXP / Hour | by: Raff")
+			If WinExists("rHelper - Exp Per Hour") Then
+			WinActivate("rHelper - Exp Per Hour")
+			WinWaitActive("rHelper - Exp Per Hour")
 			Else
 			Run("exphour.exe")
 			EndIf
 
 		Case $Button1
-			If WinExists("Ragnarok X | EXP Calculator | by: Raff") Then
-			WinActivate("Ragnarok X | EXP Calculator | by: Raff")
-			WinWaitActive("Ragnarok X | EXP Calculator | by: Raff")
+			If WinExists("rHelper - EXP Calculator") Then
+			WinActivate("rHelper - EXP Calculator")
+			WinWaitActive("rHelper - EXP Calculator")
 			Else
 			Run("expcalc.exe")
 			EndIf
