@@ -1,5 +1,5 @@
 #Region ;**** Directives created by AutoIt3Wrapper_GUI ****
-#AutoIt3Wrapper_Icon=..\..\Pictures\TeeyoTV\Team 55 - Logo\Main - BlueWhite.ico
+#AutoIt3Wrapper_Icon=C:\Users\ralph\Pictures\TeeyoTV\Team 55 - Logo\Main - BlueWhite.ico
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 ;===============================================================================
 ; Name...........: Ragnarok X - EXP PER HOUR
