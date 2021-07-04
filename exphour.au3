@@ -26,6 +26,7 @@ Global $GUI_NAME = "Ragnarok X | EXP / Hour | by: Raff"
 $Form1 = GUICreate($GUI_NAME, 371, 187, 406, 324)
 $Button1 = GUICtrlCreateButton("Load Sample Data", 264, 117, 99, 20, 0)
 $Button2 = GUICtrlCreateButton("Exp Calc", 288, 145, 75, 19, 0)
+$Button3 = GUICtrlCreateButton("Update", 287, 90, 75, 19, 0)
 
 $Label1 = GUICtrlCreateLabel("Initial Exp:", 4, 15, 96, 17)
 $Label2 = GUICtrlCreateLabel("After Exp:", 4, 40, 87, 17)
@@ -63,6 +64,9 @@ While 1
 		Case $GUI_EVENT_CLOSE
 		AdlibUnregister()
 		Exit
+		
+		Case $Button3
+			_update_Check2()
 	
 		Case $Button2
 			Run("expcalc.exe")
@@ -111,7 +115,7 @@ Func _perform_calc_exphour()
 	
 	; exp per hour
 	$playing_hours = GUICtrlRead($Input3_playing_hours)
-	$exp_gained = ($exp_need - $exp_current) * $playing_hours
+	$exp_gained = $exp_need - $exp_current
 	;$mobs_killed = ($exp_need - $exp_current) / $exp_per_mob
 	$exp_per_hour = $exp_gained / $playing_hours
 	;$exp_per_hour = ($exp_per_mob * $mobs_killed) / $playing_hours
@@ -219,7 +223,7 @@ EndFunc
 
 Func _update_Check2()
 	
-	$URL = 'http://www.autoitscript.com/forum/index.php?showtopic=93713'
+	$URL = 'https://github.com/RAcbd/ROXTools/blob/main/exphour.au3'
 
 	$HTMLSource = _INetGetSource($URL)
 
@@ -233,7 +237,7 @@ Func _update_Check2()
 					_GUICtrlStatusBar_SetText ($StatusBar1, "You are using the latest Version!")			
 				Else
 					
-					$msgbox = MsgBox(1,'Update','New Version is Avalible Go get it?')
+					$msgbox = MsgBox(1,'Update','Update to the latest version?')
 						If $msgbox = 1 Then
 							ShellExecute($URL) ; yes get it
 						EndIf
