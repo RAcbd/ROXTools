@@ -20,7 +20,7 @@
 #include <INet.au3>
 
 
-Global $GUI_NAME = "Ragnarok X | EXP / Hour | by: Raff"
+Global $GUI_NAME = "rHelper - Exp Per Hour"
 
 #Region ### START Koda GUI section ### Form=
 $Form1 = GUICreate($GUI_NAME, 371, 187, 406, 324)
@@ -65,7 +65,12 @@ While 1
 		Exit
 		
 		Case $Button2
+			If WinExists("rHelper - EXP Calculator") Then
+			WinActivate("rHelper - EXP Calculator")
+			WinWaitActive("rHelper - EXP Calculator")
+			Else
 			Run("expcalc.exe")
+			EndIf
 		
 		Case $Button1
 			GUICtrlSetData($Input1_exp_current,'1567912')
