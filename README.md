@@ -12,14 +12,14 @@ Launcher
 
 EXP Calculator
 - Calculates the following:
- -Number of Mobs to Kill
- -Exp Needed to Level Up
- -Time Needed to Level Up
+ - Number of Mobs to Kill
+ - Exp Needed to Level Up
+ - Time Needed to Level Up
 
 EXP Per Hour
 - Calculates the following:
- -Exp Gain during the session
- -Average Exp per Hour
+ - Exp Gain during the session
+ - Average Exp per Hour
 
 ## Known Bugs / Issues
 - Some weird results for 'Next Level Up'. Will be updating this soon.
