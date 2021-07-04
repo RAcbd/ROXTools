@@ -1,6 +1,12 @@
-# ROXTools
- Ragnarok X: Next Generation Tools
+# rHelper for Ragnarok X: Next Generation!
 
+## This is heavy WIP and might still contain bugs!
+
+## Usage
+
+To use this tool, either clone or download and run the Launcher.\
+
+## Features & Tools
 Launcher
 - Parent Application for EXP Calculator and EXP Per Hour
 
@@ -14,15 +20,6 @@ EXP Per Hour
 - Calculates the following:
  Exp Gain during the session
  Average Exp per Hour
-
-
-# rHelper for Ragnarok X: Next Generation!
-
-## This is heavy WIP and might still contain bugs!
-
-## Usage
-
-To use this tool, either clone or download and run the Launcher.\
 
 ## Known Bugs / Issues
 - Some weird results for 'Next Level Up'. Will be updating this soon.\
