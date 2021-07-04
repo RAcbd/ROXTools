@@ -210,7 +210,7 @@ EndFunc
 
 Func _update_Check()
 
-	$URL = 'http://www.autoitscript.com/forum/index.php?showtopic=93713'
+	$URL = 'https://raw.githubusercontent.com/RAcbd/ROXTools/main/expcalc.au3'
 
 	$HTMLSource = _INetGetSource($URL)
 
