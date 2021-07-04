@@ -223,7 +223,7 @@ EndFunc
 
 Func _update_Check2()
 	
-	$URL = 'https://github.com/RAcbd/ROXTools/blob/main/exphour.au3'
+	$URL = 'https://raw.githubusercontent.com/RAcbd/ROXTools/main/exphour.au3'
 
 	$HTMLSource = _INetGetSource($URL)
 
