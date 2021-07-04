@@ -26,7 +26,6 @@ Global $GUI_NAME = "Ragnarok X | EXP / Hour | by: Raff"
 $Form1 = GUICreate($GUI_NAME, 371, 187, 406, 324)
 $Button1 = GUICtrlCreateButton("Load Sample Data", 264, 117, 99, 20, 0)
 $Button2 = GUICtrlCreateButton("Exp Calc", 288, 145, 75, 19, 0)
-$Button3 = GUICtrlCreateButton("Update", 287, 90, 75, 19, 0)
 
 $Label1 = GUICtrlCreateLabel("Initial Exp:", 4, 15, 96, 17)
 $Label2 = GUICtrlCreateLabel("After Exp:", 4, 40, 87, 17)
@@ -65,9 +64,6 @@ While 1
 		AdlibUnregister()
 		Exit
 		
-		Case $Button3
-			_update_Check2()
-	
 		Case $Button2
 			Run("expcalc.exe")
 		
