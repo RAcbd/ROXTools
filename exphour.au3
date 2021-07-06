@@ -1,3 +1,4 @@
+#RequireAdmin
 #Region ;**** Directives created by AutoIt3Wrapper_GUI ****
 #AutoIt3Wrapper_Icon=C:\Users\ralph\Pictures\TeeyoTV\Team 55 - Logo\Main - BlueWhite.ico
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
@@ -18,17 +19,26 @@
 #include <StatusBarConstants.au3>
 #include <WindowsConstants.au3>
 #include <INet.au3>
+#include <NumCR.au3>
+#include <Clipboard.au3>
 
 
 Global $GUI_NAME = "rHelper - Exp Per Hour"
 
 #Region ### START Koda GUI section ### Form=
-$Form1 = GUICreate($GUI_NAME, 371, 187, 406, 324)
-$Button1 = GUICtrlCreateButton("Load Sample Data", 264, 117, 99, 20, 0)
-$Button2 = GUICtrlCreateButton("Exp Calc", 288, 145, 75, 19, 0)
+$Form1 = GUICreate($GUI_NAME, 500, 187, 152, 680)
+$b_update = GUICtrlCreateButton("Update", 410, 117, 75, 19, 0)
+$b_donate = GUICtrlCreateButton("Donate", 410, 140, 75, 19, 0)
+$b_start = GUICtrlCreateButton("Start", 5, 70, 79, 21)
+$b_pause = GUICtrlCreateButton("Pause", 5, 90, 79, 21)
+$b_reset = GUICtrlCreateButton("Reset", 5, 110, 79, 21)
+$b_real_time_eph = GUICtrlCreateButton("RT", 65, 12.5, 30, 21)
+$b_off_real_time_eph = GUICtrlCreateButton("Off", 65, 37.5, 30, 21)
 
-$Label1 = GUICtrlCreateLabel("Initial Exp:", 4, 15, 96, 17)
-$Label2 = GUICtrlCreateLabel("After Exp:", 4, 40, 87, 17)
+$l_timer = GUICtrlCreateLabel("00:00:00", 100, 113.5, 79, 21)
+
+$Label1 = GUICtrlCreateLabel("Initial Exp:", 4, 15, 50, 17)
+$Label2 = GUICtrlCreateLabel("After Exp:", 4, 40, 50, 17)
 
 ;$Label4_1 = GUICtrlCreateLabel("EXP Per Mob:", 4, 75, 92, 17)
 $Label3 = GUICtrlCreateLabel("Grind Time (Hrs):", 4, 139, 79, 17)
@@ -42,18 +52,23 @@ $Label8_2 = GUICtrlCreateLabel("0", 290, 40, 74, 17)
 
 $Input1_exp_current = GUICtrlCreateInput("", 100, 12, 97, 21)
 $Input2_exp_need = GUICtrlCreateInput("", 100, 38, 97, 21)
-$Input3_playing_hours = GUICtrlCreateInput("", 100, 136, 49, 21)
+$Input3_playing_hours = GUICtrlCreateInput("", 100, 136, 97, 21)
 ;$Input4_exp_per_mob = GUICtrlCreateInput("", 101, 72, 49, 21)
 ;$Input5_1_mobkilltime_sec = GUICtrlCreateLabel("Time to Kill (TTK):", 4, 108, 96, 17)
 ;$Input5_mobkilltime_sec = GUICtrlCreateInput("", 100, 104, 49, 21)
 
 $StatusBar1 = _GUICtrlStatusBar_Create($Form1)
-GUISetState(@SW_SHOW)
+; ===============================SETUP=========================================================
+;Local $hWnd = WinWait("[CLASS:subWin; INSTANCE:1]", "", 10)
+; =============================================================================================
+GUISetState(@SW_SHOW, $Form1)
+;WinSetTrans($Form1, "", 200)
 #EndRegion ### END Koda GUI section ###
 
 WinSetOnTop($GUI_NAME, "", 1)
 
 AdlibRegister("_perform_calc_exphour",600)
+Global $state = "Idle", $timer, $render_timer, $saved_time = 0
 
 While 1
 	$nMsg = GUIGetMsg()
@@ -63,23 +78,119 @@ While 1
 		Case $GUI_EVENT_CLOSE
 		AdlibUnregister()
 		Exit
+			
+		Case $b_donate
+			ShellExecute("https://www.buymeacoffee.com/racbd")
 		
-		Case $Button2
-			If WinExists("rHelper - EXP Calculator") Then
-			WinActivate("rHelper - EXP Calculator")
-			WinWaitActive("rHelper - EXP Calculator")
-			Else
-			Run("expcalc.exe")
-			EndIf
-		
-		Case $Button1
-			GUICtrlSetData($Input1_exp_current,'1567912')
-			GUICtrlSetData($Input2_exp_need,'1596312')			
-			GUICtrlSetData($Input3_playing_hours,'3')
-			;GUICtrlSetData($Input4_exp_per_mob,'83')
-			;GUICtrlSetData($Input5_mobkilltime_sec,'1')
+		Case $b_update
+			_update_Check2()
+			
+		Case $b_start
+			start_timer()
+			_getcurrentexp()
+		Case $b_pause
+            pause_timer()
+			_getafterexp()
+		Case $b_reset
+			reset_timer()
+			GUICtrlSetData($Input1_exp_current,'')
+			GUICtrlSetData($Input2_exp_need,'')
+			GUICtrlSetData($Input3_playing_hours,'')			
+		Case $b_real_time_eph
+			AdlibRegister(_real_time_eph, 5000)
+		Case $b_off_real_time_eph
+			AdlibUnregister()
 EndSwitch
+If $state == "Running" And TimerDiff($render_timer) >= 40 Then renderTime()
 WEnd
+
+Func start_timer()
+    If $state == "Idle" Then
+        Global $timer = TimerInit(), $state = "Running", $render_timer = TimerInit()
+    EndIf
+EndFunc
+
+Func stop_timer()
+    If $state == "Running" Then
+        $state = "Stopped"
+        $saved_time = TimerDiff($timer) + $saved_time
+        GUICtrlSetData($b_pause, "Resume")
+    ElseIf $state == "Paused" Then
+        $state = "Running"
+        $timer = TimerInit()
+        GUICtrlSetData($b_pause, "Pause")
+    EndIf
+EndFunc
+
+Func pause_timer()
+    If $state == "Running" Then
+        $state = "Paused"
+        $saved_time = TimerDiff($timer) + $saved_time
+        GUICtrlSetData($b_pause, "Resume")
+    ElseIf $state == "Paused" Then
+        $state = "Running"
+        $timer = TimerInit()
+        GUICtrlSetData($b_pause, "Pause")
+    EndIf
+EndFunc
+
+Func reset_timer()
+    Global $timer = "", $state = "Idle", $render_timer = "", $saved_time = 0
+    GUICtrlSetData($l_timer, "00:00:00")
+    GUICtrlSetData($b_pause, "Pause")
+EndFunc
+
+Func renderTime()
+    Global $diff = TimerDiff($timer) + $saved_time
+    Global $sec_time = Int(Mod($diff/1000, 60))
+    Global $min_time = Int(Mod($diff/60000, 60))
+    Global $hour_time = Int($diff/3600000)
+    If $sec_time < 10 Then $sec_time = "0"&$sec_time
+    If $min_time < 10 Then $min_time = "0"&$min_time
+    If $hour_time < 10 Then $hour_time = "0"&$hour_time
+    GUICtrlSetData($l_timer, $hour_time&":"&$min_time&":"&$sec_time)
+    $render_timer = TimerInit()
+	;Global $convert_time = ($hour_time + $min_time) * (1 / 60) + $sec_time (1 / 3600)
+	Global $convert_time = Round($hour_time + $min_time * (1/60) + $sec_time * (1/3600),3)
+	GUICtrlSetData($Input3_playing_hours,$convert_time)
+EndFunc
+
+Func _getcurrentexp()
+		If WinExists("LDPlayer") Then
+			WinActivate("LDPlayer")
+			WinWaitActive("LDPlayer")
+		EndIf
+		ControlSend("[TITLE:LDPlayer]", "", "", "{L}")
+		Sleep (2000)
+		RunWait("C:\WINDOWS\system32\cmd.exe" & " /c " & 'Capture2Text_CLI.exe --clipboard --language English --screen-rect "1900 424 2051 453" ', "C:\Capture2Text", @SW_HIDE)
+		$text_current_exp=_ClipBoard_GetData($CF_UNICODETEXT)
+		GUICtrlSetData($Input1_exp_current,$text_current_exp)
+EndFunc
+
+Func _getafterexp()
+		If WinExists("LDPlayer") Then
+			WinActivate("LDPlayer")
+			WinWaitActive("LDPlayer")
+		EndIf
+		ControlSend("[TITLE:LDPlayer]", "", "", "{L}")
+		Sleep (2000)
+		;RunWait("C:\WINDOWS\system32\cmd.exe" & " /c " & 'Capture2Text_CLI.exe --clipboard --language English --screen-rect "2065 428 2211 452" ', "C:\Capture2Text", @SW_HIDE) ; Checks EXP TO LEVEL
+		RunWait("C:\WINDOWS\system32\cmd.exe" & " /c " & 'Capture2Text_CLI.exe --clipboard --language English --screen-rect "1900 424 2051 453" ', "C:\Capture2Text", @SW_HIDE)
+		$text_after_exp=_ClipBoard_GetData($CF_UNICODETEXT)
+		GUICtrlSetData($Input2_exp_need,$text_after_exp)
+EndFunc
+
+Func _real_time_eph()
+		If WinExists("LDPlayer") Then
+		WinActivate("LDPlayer")
+		WinWaitActive("LDPlayer")
+		EndIf
+		ControlSend("[TITLE:LDPlayer]", "", "", "{L}")
+		Sleep (2000)
+		RunWait("C:\WINDOWS\system32\cmd.exe" & " /c " & 'Capture2Text_CLI.exe --clipboard --language English --screen-rect "1900 424 2051 453" ', "C:\Capture2Text", @SW_HIDE)
+		$text_rt_eph=_ClipBoard_GetData($CF_UNICODETEXT)
+		GUICtrlSetData($Input2_exp_need,$text_rt_eph)
+EndFunc
 
 Func _perform_calc_exphour()
 	
@@ -115,6 +226,7 @@ Func _perform_calc_exphour()
 	;$Mobs_to_kill	= $exp_needed_to_level / $exp_per_mob
 	
 	; exp per hour
+	GUICtrlSetData($Input3_playing_hours,$convert_time)
 	$playing_hours = GUICtrlRead($Input3_playing_hours)
 	$exp_gained = $exp_need - $exp_current
 	;$mobs_killed = ($exp_need - $exp_current) / $exp_per_mob
@@ -124,13 +236,22 @@ Func _perform_calc_exphour()
 	
 	;GUICtrlSetData($Label9_2,$days & ' Days ' & $hours & ' Hours ' & $minutes & ' Min' ) ; 
 ;~ 	------------------------------------------------------------
-
-	GUICtrlSetData($Label7_2,Round($exp_gained,0)) ; mobs to kill
+	$exp_gained_to_convert = $exp_gained
+	$result_exp_gained = _StringAddThousandsSep($exp_gained_to_convert)
+	$round_exp_gained = Round($exp_gained,0)
+	GUICtrlSetData($Label7_2,_StringAddThousandsSep($round_exp_gained))
+	
+	
+	;GUICtrlSetData($Label7_2,Round($exp_gained,0)) ; exp gained during session
 	
 	;GUICtrlSetData($Label8_2,Round($exp_needed_to_level,3) & ' %') ; exp per mob, but we need to round it up
 	;$exp_needed_to_level	= Number(StringReplace($exp_needed_to_level,',','.'))
 	;GUICtrlSetData($Label8_2,$exp_per_hour)
-	GUICtrlSetData($Label8_2,Round($exp_per_hour,0))
+	$exp_per_hour_to_convert = $exp_per_hour
+	$result_eph = _StringAddThousandsSep($exp_per_hour_to_convert)
+	$round_eph = Round($exp_per_hour,0)
+	GUICtrlSetData($Label8_2,_StringAddThousandsSep($round_eph))
+	;GUICtrlSetData($Label8_2,Round($exp_per_hour,0))
 
 	
 	;## how many time to spend nonstop in seconds
@@ -222,6 +343,37 @@ Func _playinghours($days)
 
 EndFunc
 
+ConsoleWrite(_StringAddThousandsSep("61234567890.54321") & @CRLF)
+ConsoleWrite(_StringAddThousandsSep("-$123123.50") & @CRLF)
+ConsoleWrite(_StringAddThousandsSep("-8123.45") & @CRLF)
+ConsoleWrite(_StringAddThousandsSep("-123.45") & @CRLF)
+ConsoleWrite(_StringAddThousandsSep("-$25") & @CRLF)
+ConsoleWrite(_StringAddThousandsSep("-$hello") & @CRLF)
+
+; Instead of :-
+; "Local $rKey = "HKCU\Control Panel\International"
+;   If $sDecimal = -1 Then $sDecimal = RegRead($rKey, "sDecimal")
+;   If $sThousands = -1 Then $sThousands = RegRead($rKey, "sThousand") ",
+;
+; $sThousands = ",", $sDecimal = "." are function parameters.
+;
+Func _StringAddThousandsSep($sString, $sThousands = ",", $sDecimal = ".")
+    Local $aNumber, $sLeft, $sResult = "", $iNegSign = "", $DolSgn = ""
+    If Number(StringRegExpReplace($sString, "[^0-9\-.+]", "\1")) < 0 Then $iNegSign = "-" ; Allows for a negative value
+    If StringRegExp($sString, "\$") And StringRegExpReplace($sString, "[^0-9]", "\1") <> "" Then $DolSgn = "$" ; Allow for Dollar sign
+    $aNumber = StringRegExp($sString, "(\d+)\D?(\d*)", 1)
+    If UBound($aNumber) = 2 Then
+        $sLeft = $aNumber[0]
+        While StringLen($sLeft)
+            $sResult = $sThousands & StringRight($sLeft, 3) & $sResult
+            $sLeft = StringTrimRight($sLeft, 3)
+        WEnd
+        $sResult = StringTrimLeft($sResult, 1); Strip leading thousands separator
+        If $aNumber[1] <> "" Then $sResult &= $sDecimal & $aNumber[1] ; Add decimal
+    EndIf
+    Return $iNegSign & $DolSgn & $sResult ; Adds minus or "" (nothing)and Adds $ or ""
+EndFunc ;==>_StringAddThousandsSep
+
 Func _update_Check2()
 	
 	$URL = 'https://raw.githubusercontent.com/RAcbd/ROXTools/main/exphour.au3'
@@ -250,19 +402,3 @@ Func _update_Check2()
 		Next
 
 EndFunc
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
