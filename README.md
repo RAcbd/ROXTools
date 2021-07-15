@@ -8,18 +8,18 @@ If you are a new user, download the setup for rHelper or the Fishing Tool
 
 rHelper FAQs
 1. How to get a serial key?
- 1.1. Go to https://www.buymeacoffee.com/racbd and pledge a beer
- 1.2. Message me on Discord (Raff#9069)
- 1.3. Enter your license key
+- Go to https://www.buymeacoffee.com/racbd and pledge a beer
+- Message me on Discord (Raff#9069)
+- Enter your license key
  
 2. It's not seeing my exp?
- 1.1. You have to mark your EXP area (The initial number between the separator "/"), make room for bigger exp numbers.
- 1.2. Mark your profile/avatar (It's on the upper left of your screen where you see a picture of your character) So rHelper knows where to click to get your EXP.
+- You have to mark your EXP area (The initial number between the separator "/"), make room for bigger exp numbers.
+- Mark your profile/avatar (It's on the upper left of your screen where you see a picture of your character) So rHelper knows where to click to get your EXP.
  
 3. It's not working?
- 1.1. Make sure you head onto the settings part (Click the ⚙️ button) and change your Path to the App Directory (where you installed rHelper) and choose the Includes folder.
- 1.2. Make sure to Mark your EXP Area as explained on FAQ #2
- 1.3. Choose your Emulator from the dropdown (This is only need to be done once). Currently rHelper only supports Bluestacks, LDPlayer, and Nox
+- Make sure you head onto the settings part (Click the ⚙️ button) and change your Path to the App Directory (where you installed rHelper) and choose the Includes folder.
+- Make sure to Mark your EXP Area as explained on FAQ #2
+- Choose your Emulator from the dropdown (This is only need to be done once). Currently rHelper only supports Bluestacks, LDPlayer, and Nox
 
 ## Features & Tools
 
