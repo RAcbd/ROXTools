@@ -2,27 +2,42 @@
 
 ## This is heavy WIP and might still contain bugs!
 
-## Usage
+## Usage and FAQs
 
-To use this tool, either clone or download and run the Launcher.
+If you are a new user, download the setup for rHelper or the Fishing Tool
+
+rHelper FAQs
+1. How to get a serial key?
+- Go to https://www.buymeacoffee.com/racbd and pledge a beer
+- Message me on Discord (Raff#9069)
+- Enter your license key
+ 
+2. It's not seeing my exp?
+- You have to mark your EXP area (The initial number between the separator "/"), make room for bigger exp numbers.
+- Mark your profile/avatar (It's on the upper left of your screen where you see a picture of your character) So rHelper knows where to click to get your EXP.
+ 
+3. It's not working?
+- Make sure you head onto the settings part (Click the ⚙️ button) and change your Path to the App Directory (where you installed rHelper) and choose the Includes folder.
+- Make sure to Mark your EXP Area as explained on FAQ #2
+- Choose your Emulator from the dropdown (This is only need to be done once). Currently rHelper only supports Bluestacks, LDPlayer, and Nox
 
 ## Features & Tools
-Launcher
-- Parent Application for EXP Calculator and EXP Per Hour
 
-EXP Calculator
+rHelper EPH
 - Calculates the following:
- - Number of Mobs to Kill
- - Exp Needed to Level Up
- - Time Needed to Level Up
+- Number of Mobs to Kill
+- Exp Needed to Level Up
+- Time Needed to Level Up
+- Calculates the following:
+- Exp Gain during the session
+- Average Exp per Hour
 
-EXP Per Hour
-- Calculates the following:
- - Exp Gain during the session
- - Average Exp per Hour
+rHelper Fishing Tool
+- Automates Life Skill: Fishing
 
 ## Known Bugs / Issues
 - Some weird results for 'Next Level Up'. Will be updating this soon.
+- Sometimes the Fishing tool stops, just restart the app and press Start again. This will be fixed on the next release.
 
 ## Bugs / Feature Requests / Feedback / Donations
 
