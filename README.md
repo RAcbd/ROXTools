@@ -23,9 +23,9 @@ rHelper FAQs
 
 4. How to Mark Fish Area?
 - Make sure the Cast/Reel Button is on the water
-- Click Mark Fish Area
+- Click Mark Fish Area and it should look like this when you mark.
 - ![image](https://user-images.githubusercontent.com/22793295/126055456-3343dde2-659e-44dc-af61-87e407449db4.png) 
-it should look like this when you mark.
+
 
 ## Features & Tools
 
